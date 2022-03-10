@@ -1,5 +1,5 @@
 <template>
-  <div id="sale-pay-container"></div>
+  <div id="sale-pay-count-container"></div>
 </template>
 <script>
 // import { Loading } from 'element-ui'
@@ -10,69 +10,63 @@ export default {
   data () {
     return {
       query: {
-        shopno: 22088001,
+        shopno: 60001040,
         beginDate: 20200101,
         endDate: 20210601,
         date_type: 0,
-        parmtype: 0
+        parmtype: 0,
+        parmvalue: ''
       }
     }
   },
   methods: {
-    getDateCount () {
+    getSalesPayCount () {
       // Loading.service({ text: '正在加载' })
-      return this.$api.report.getBusDatecount(this.query)
+      return this.$api.report.getGridRsalespaycount(this.query)
     },
-    drawChart () {
-      const myChart = echarts.init(document.getElementById('sale-pay-container'))
+    drawChart (chartData) {
+      const myChart = echarts.init(document.getElementById('sale-pay-count-container'))
       myChart.clear()
       const option = {
-        title: {
-          text: 'Referer of a Website',
-          subtext: 'Fake Data',
-          left: 'center'
-        },
         tooltip: {
           trigger: 'item'
         },
         legend: {
           orient: 'vertical',
-          left: 'left'
+          left: 'left',
+          textStyle: {
+            color: '#fff'
+          }
+        },
+        grid: {
+          left: '100%',
+          right: '10%',
+          bottom: '3%',
+          containLabel: true
         },
         series: [
           {
-            name: 'Access From',
+            name: '收银汇总',
             type: 'pie',
-            radius: '50%',
-            data: [
-              {
-                value: 1048,
-                name: 'Search Engine'
-              },
-              {
-                value: 735,
-                name: 'Direct'
-              },
-              {
-                value: 580,
-                name: 'Email'
-              },
-              {
-                value: 484,
-                name: 'Union Ads'
-              },
-              {
-                value: 300,
-                name: 'Video Ads'
-              }
-            ],
+            radius: ['50%', '80%'],
+            avoidLabelOverlap: false,
+            label: {
+              show: false,
+              position: 'center'
+            },
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
                 shadowOffsetX: 0,
                 shadowColor: 'rgba(0, 0, 0, 0.5)'
               }
-            }
+            },
+            data: chartData.map(item => {
+              return {
+                value: item.payamount,
+                name: item.payway
+              }
+            })
           }
         ]
       }
@@ -81,13 +75,16 @@ export default {
     }
   },
   mounted () {
-    this.drawChart()
+    this.getSalesPayCount().then(res => {
+      const chartData = res.data.Data
+      this.drawChart(chartData)
+    })
   }
 }
 </script>
 <style lang="scss" scoped>
-#sale-pay-container {
-  height: 1rem;
-  width: 1rem;
+#sale-pay-count-container {
+  height: 80%;
+  width: 100%;
 }
 </style>

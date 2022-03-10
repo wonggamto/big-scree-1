@@ -1,0 +1,23 @@
+{
+  "id": "3233406",
+  "name": "大屏项目",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "15369",
+      "name": "右三角形",
+      "font_class": "rightArrow",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "15370",
+      "name": "左三角形",
+      "font_class": "leftArrow",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    }
+  ]
+}

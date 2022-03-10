@@ -56,7 +56,12 @@ export default {
 </script>
 <style lang="scss" scoped>
 #sale-item-container {
-  height: 1rem;
-  width: 1rem;
+  //height: 100px;
+  //width:100px;
+  height: 100%;
+  width: 100%;
+  //border-radius: 4px;
+  //border:1px solid lightblue;
+
 }
 </style>

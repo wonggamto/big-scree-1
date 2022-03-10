@@ -1,29 +1,28 @@
 <template>
-  <div id="people-count-container" v-loading="loading"></div>
+  <div id="item-count-container" v-loading="loading"></div>
 </template>
 <script>
 // import { Loading } from 'element-ui'
 import * as echarts from 'echarts'
 // let myChart = echarts.init(document.getElementById('main'))
 export default {
-  name: 'PeopleCount',
+  name: 'ItemCountZhong',
   data () {
     return {
       query: {
-        shopno: 60001040,
+        shopno: 22088001,
         beginDate: 20200101,
         endDate: 20210601,
-        date_type: 1,
+        date_type: 0,
         parmtype: 0
       },
-      tableData: [],
       loading: false
     }
   },
   methods: {
-    getPeopleCount () {
+    getItemCountZhong () {
       // Loading.service({ text: '正在加载' })
-      return this.$api.report.getGridPeopleCount(this.query)
+      return this.$api.report.getGridItemCountZhong(this.query)
     },
     groupData (arr, fun) {
       const groups = {}
@@ -48,17 +47,15 @@ export default {
       return newData
     },
     drawChart (chartData) {
-      const myChart = echarts.init(document.getElementById('people-count-container'))
+      const myChart = echarts.init(document.getElementById('item-count-container'))
       myChart.clear()
       const option = {
         tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
+          trigger: 'axis',
           textStyle: {
-            color: '#fff'
-          },
-          data: ['客流量', '客流量(取消)']
+            color: '#000',
+            fontSize: 18
+          }
         },
         grid: {
           left: '3%',
@@ -67,46 +64,34 @@ export default {
           containLabel: true
         },
         xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          axisLine: {
-            lineStyle: {
-              color: '#fff'
-            }
-          },
-          data: chartData.map(item => {
-            return item.time
-          })
-          // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        },
-        yAxis: {
           type: 'value',
+          boundaryGap: [0, 0.01],
           axisLine: {
             lineStyle: {
               color: '#fff'
             }
           }
         },
+        yAxis: {
+          type: 'category',
+          axisLine: {
+            lineStyle: {
+              color: '#fff'
+            }
+          },
+          // data: ['Brazil', 'Indonesia', 'USA', 'India', 'China', 'World']
+          data: chartData.map(item => {
+            return item.itemName
+          })
+        },
         series: [
           {
-            name: '客流量',
-            type: 'line',
-            // stack: 'Total',
-            smooth: true,
+            name: '钟数',
+            type: 'bar',
             data: chartData.map(item => {
-              return item.peopleCount
+              return item.sum_Qnty
             })
-            // data: [120, 132, 101, 134, 90, 230, 210]
-          },
-          {
-            name: '客流量(取消)',
-            type: 'line',
-            // stack: 'Total',
-            smooth: true,
-            data: chartData.map(item => {
-              return item.cancelPeopleCount
-            })
-            // data: [220, 182, 191, 234, 290, 330, 310]
+            // data: [18203, 23489, 29034, 104970, 131744, 630230]
           }
 
         ]
@@ -117,13 +102,13 @@ export default {
     }
   },
   mounted () {
-    this.getPeopleCount().then(res => {
+    this.getItemCountZhong().then(res => {
       this.loading = true
-      const chartData = res.data.Data.map(item => {
+      const data = this.getNewData(res.data.Data, 'itemname')
+      const chartData = data.map(el => {
         return {
-          peopleCount: item.Peoples,
-          time: `${item.yyyymmdd} 时`,
-          cancelPeopleCount: item.PeoplesCancel
+          itemName: el.itemName,
+          sum_Qnty: el.data.reduce((init, item) => init + item.Qnty, 0)
         }
       })
       this.drawChart(chartData)
@@ -132,7 +117,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-#people-count-container {
+#item-count-container {
   height: 80%;
   width: 100%;
 }

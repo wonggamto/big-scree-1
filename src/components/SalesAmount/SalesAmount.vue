@@ -10,53 +10,64 @@ export default {
   data () {
     return {
       query: {
-        shopno: 22088001,
+        shopno: 60001040,
         beginDate: 20200101,
         endDate: 20210601,
-        date_type: 0,
-        parmtype: 0
+        date_type: 1,
+        parmtype: 0,
+        parmvalue: ''
       }
     }
   },
   methods: {
-    getDateCount () {
+    getSalesAmount () {
       // Loading.service({ text: '正在加载' })
-      return this.$api.report.getBusDatecount(this.query)
+      return this.$api.report.getGridSalesAmount(this.query)
     },
-    drawChart () {
+    drawChart (chartData) {
       const myChart = echarts.init(document.getElementById('sale-amount-container'))
       myChart.clear()
       const option = {
-        legend: {
-          top: 'bottom'
+        tooltip: {
+          trigger: 'axis'
         },
-        toolbox: {
-          show: true,
-          feature: {
-            mark: { show: true },
-            dataView: { show: true, readOnly: false },
-            restore: { show: true },
-            saveAsImage: { show: true }
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '10%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          axisLine: {
+            lineStyle: {
+              color: '#fff'
+            }
+          },
+          data: chartData.map(item => {
+            return item.time
+          })
+          // data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        },
+        yAxis: {
+          type: 'value',
+          axisLine: {
+            lineStyle: {
+              color: '#fff'
+            }
           }
         },
         series: [
           {
-            name: 'Nightingale Chart',
-            type: 'pie',
-            radius: [10, 80],
-            center: ['50%', '50%'],
-            roseType: 'area',
-            itemStyle: {
-              borderRadius: 8
-            },
-            data: [
-              { value: 40, name: 'rose 1' },
-              { value: 38, name: 'rose 2' },
-              { value: 32, name: 'rose 3' },
-              { value: 30, name: 'rose 4' },
-              { value: 20, name: 'rose 5' },
-              { value: 50, name: 'rose 6' }
-            ]
+            name: '实收金额',
+            type: 'line',
+            // stack: 'Total',
+            smooth: true,
+            data: chartData.map(item => {
+              return item.ReceivedAmount
+            })
+            // data: [120, 132, 101, 134, 90, 230, 210]
           }
         ]
       }
@@ -65,13 +76,22 @@ export default {
     }
   },
   mounted () {
-    this.drawChart()
+    this.getSalesAmount().then(res => {
+      console.log('xxx', res)
+      const chartData = res.data.Data.map(item => {
+        return {
+          ...item,
+          time: `${item.yyyymmdd} 时`
+        }
+      })
+      this.drawChart(chartData)
+    })
   }
 }
 </script>
 <style lang="scss" scoped>
 #sale-amount-container {
-  height: 1rem;
+  height: 80%;
   width: 100%;
 }
 </style>

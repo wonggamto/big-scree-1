@@ -6,29 +6,15 @@
     <meta content="width=device-width,initial-scale=1.0" name="viewport">
     <link href="<%= BASE_URL %>favicon.ico" rel="icon">
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <style>
-        * {margin: 0;padding: 0;}
-
-        * {box-sizing: border-box}
-    </style>
-    <script>
-        window.clientWidth = document.documentElement.clientWidth
-        window.clientHeight = document.documentElement.clientHeight
-        window.pageWidth = clientWidth / clientHeight > 16 / 9 ? clientHeight * (16 / 9) : clientWidth
-        window.pageHeight = window.pageWidth / (16 / 9)
-        const string = `<style>html{
-      font-size: ${window.pageWidth / 100}px
-    }</style>`
-        document.write(string)
-    </script>
+    <script src="./test.js"></script>
 </head>
 <body>
 <div id="app"></div>
 <script>
-    let app = document.querySelector('#app')
-    app.style.width = window.pageWidth + 'px'
-    app.style.height = window.pageHeight + 'px'
-    app.style.marginTop = (clientHeight - window.pageHeight) / 2 + 'px'
+    // let app = document.querySelector('#app')
+    // app.style.width = window.pageWidth + 'px'
+    // app.style.height = window.pageHeight + 'px'
+    // app.style.marginTop = (window.clientHeight - window.pageHeight) / 2 + 'px'
 </script>
 </body>
 </html>

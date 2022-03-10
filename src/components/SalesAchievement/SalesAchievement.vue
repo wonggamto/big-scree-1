@@ -72,7 +72,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 #sale-achievement {
-  height: 1rem;
-  width: 1rem;
+  height: 100px;
+  width:100px;
 }
 </style>
